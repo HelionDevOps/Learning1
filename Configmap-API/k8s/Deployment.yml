@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: config-dep
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: config-dep
+  template:
+    metadata:
+      labels:
+        app: config-dep
+    spec:
+      containers:
+      - name: config-api
+        image: helion444/config-api-simple:alpine
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+        env:
+          - name: APP_MESSAGE
+            valueFrom:
+              configMapKeyRef:
+                name: config-api
+                key: APP_MESSAGE
+        ports:
+        - containerPort: 3000
+          protocol: TCP
